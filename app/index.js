@@ -1,14 +1,15 @@
 const express = require('express');
 const app = express();
+const _ = require('lodash');
 const http = require('http');// 0.shoro mikonim be inke be server vaslkonim site ro . ye raveshe dige
 const path = require('path');// path native nodejs hast
 
 // baraye inke be etellaate dakele body marboot req va res dastresi peyda konim body parser mikhaim 
 const bodyParser = require('body-parser');
 const coockeiParser = require('cookie-parser');
-const flash = require('connect-flash');
+
 const { check, validationResult } = require('express-validator');
-//var validator = require('validator');
+const flash = require('connect-flash');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);//session ro to mongodb zakhire mikonim 
 const mongoose = require('mongoose');
@@ -65,8 +66,10 @@ module.exports = class Application {
        app.use(bodyParser.urlencoded({extended:true}));
 
        // validation information 
+       //app.use(check);
+       //app.use(validationResult);
        //console.log(check());
-       app.use(check());
+       
 
 
 
