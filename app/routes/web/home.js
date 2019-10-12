@@ -43,33 +43,68 @@ router.post('/register' ,[
     check('password','پسورد کمتر از 8 کرکتر نباشد').isLength({ min: 8 })
     
     ],(req, res) => {
-     // Finds the validation errors in this request and wraps them in an object with handy functions
-        const errors = validationResult(req).array();
-        var message = [];
-        //console.log(errors);
-        for(var i=0;i<(errors.length);i++){
-            message.push(errors[i].msg);
-        }
-       // console.log(message);
-        //console.log(errors.isEmpty());
-        if (!errors.length == 0) {
-            //res.status(422).json({ errors: errors.array() });
-            //res.json('show register error');
-             req.flash('errors',message);
-             res.redirect('/register');
+          registerControler.recaptchaValidation(req,res)
+              .then(result =>{
+                     // Finds the validation errors in this request and wraps them in an object with handy functions
+                     const errors = validationResult(req).array();
+                     var message = [];
+                     //console.log(errors);
+                     for(var i=0;i<(errors.length);i++){
+                           message.push(errors[i].msg);
+                     }
+                     // console.log(message);
+                      //console.log(errors.isEmpty());
+                     if (!errors.length == 0) {
+                              //res.status(422).json({ errors: errors.array() });
+                             //res.json('show register error');
+                              req.flash('errors',message);
+                              res.redirect('/register');
+                    }
+                    else {
+                        res.json(req.body); 
+                    }
+              })
+              .catch(err => console.log(err));
+              
+              
+              
           
-        }
-        else {
-            res.json('user create');
-        }
-            //return true;
-    // req.getValidationResult()
-    //     .then(result=>{
-    //          const errors = result.array();// age error bashe array mikone
-    //          res.json(errors);
-    //      })   
-    //     .catch(err=> console.log(err)) 
+          
+          
+          
+          
+        //       registerControler.recaptcha.verify(req,(err,data)=>{
+        //   if (err){
+        //      console.log(err);
+        //      res.json('error');
+        //   }
+        //   else{
+               
+        //       // Finds the validation errors in this request and wraps them in an object with handy functions
+        //      const errors = validationResult(req).array();
+        //      var message = [];
+        //      //console.log(errors);
+        //      for(var i=0;i<(errors.length);i++){
+        //       message.push(errors[i].msg);
+        //      }
+        //      // console.log(message);
+        //      //console.log(errors.isEmpty());
+        //     if (!errors.length == 0) {
+        //     //res.status(422).json({ errors: errors.array() });
+        //     //res.json('show register error');
+        //         req.flash('errors',message);
+        //         res.redirect('/register');
+              
+        //     }
+        //     else {
+        //        res.json(req.body); 
+        //     }
+        //   }
+       
+            
+        // }) 
  }
+ 
 );
 
 

@@ -9,8 +9,7 @@ class controler {
       autoBind(this);// kalameye this ro bind mikonim be ar methodi ke vojod dare
    }
 
-
-
+   
 }
 
 

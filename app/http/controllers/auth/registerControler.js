@@ -1,34 +1,37 @@
 const controller = require('app/http/controllers/controler');
-
+const Recaptcha = require('express-recaptcha').RecaptchaV2;
 
 
 
 
 
 class registerControler extends controller{// hala in erthbari mikone az controller asli
+    
+    constructor(){
+        super();
+        this.recaptcha = new Recaptcha('6LdlNb0UAAAAAIDD7l650KPJiC07HhW095We4W1G', '6LdlNb0UAAAAAPSwu98HNdgZhvXBIH1FCr7Ve2tj',{callback:'cb',hl:'fa'});
+    }
+
     showRegistrationForm(req,res){
+        
         const errors = req.flash('errors');
         console.log(errors);
-        res.render('auth/register.ejs',{ messages : errors});//esme fili ke mikhim neshon bedimo mizarim
+        res.render('auth/register.ejs',{ messages : errors , recaptcha : this.recaptcha.render()});//esme fili ke mikhim neshon bedimo mizarim
     }
-    // registerProccess(req,res,next){
+    recaptchaValidation(req,res){
+       return new Promise((resolve,reject)=>{
+           
+        this.recaptcha.verify(req,(err,data)=>{
+            if (err){
+                req.flash('errors',' security option is OFF !!!  please accept reCAPTCHA and try again ');
+                res.redirect(req.url);// ba in dastor az harjaii omade mire hamon safe masalan az login age omae mmire login
+             } else resolve(true); 
+             
+         })
+       }) 
        
-    //    req.checkBody('name','فیلد نام نمی تواند خالی باشد').notEmpty();
-    // //    req.checkBody('name','فیلد نام نمی تواند کمتر از 5 کرکتر باشد').isLength({min:5});
-    // //    req.checkBody('email','فیلد ایمیل نمی تواند خالی باشد').notEmpty();
-    // //    req.checkBody('email','فیلد ایمیل  باشد').isEmail();
-    // //    req.checkBody('password','فیلد پسورد نمی تواند خالی باشد').notEmpty();
-    // //    req.checkBody('name','پسورد کمتر از 8 کرکتر نباشد').isLength({min:8});
-       
-
-    //    req.getValidationResult()
-    //        .then(result=>{
-    //             const errors = result.array();// age error bashe array mikone
-    //             res.json(errors);
-    //         })   
-    //        .catch(err=> console.log(err)) 
-    // }
-
+     }
+  
 }
 
 
