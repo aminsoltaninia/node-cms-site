@@ -1,6 +1,6 @@
 const controller = require('app/http/controllers/controler');
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
-
+const passport = require('passport');
 
 
 
@@ -30,6 +30,13 @@ class registerControler extends controller{// hala in erthbari mikone az control
          })
        }) 
        
+     }
+     registerProccess(req,res,next){
+             passport.authenticate('local.register',{// strategy ke khodemon mikhim roosh bearim 
+                 successRedirect : '/',// age okmbood boro safeye asli
+                 failureRedirect : '/register',
+                 failureFlash : true // age bekhaim etelaat ro be sorate flash message ersal knim
+             })(req,res,next);// ba ezafe kardane in optionha kare mofidtari angam mide ta halate defult 
      }
   
 }

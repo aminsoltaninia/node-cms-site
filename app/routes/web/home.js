@@ -42,7 +42,7 @@ router.post('/register' ,[
     check('password','فیلد پسورد نمی تواند خالی باشد').not().isEmpty(),
     check('password','پسورد کمتر از 8 کرکتر نباشد').isLength({ min: 8 })
     
-    ],(req, res) => {
+    ],(req, res,next) => {
           registerControler.recaptchaValidation(req,res)
               .then(result =>{
                      // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -61,7 +61,8 @@ router.post('/register' ,[
                               res.redirect('/register');
                     }
                     else {
-                        res.json(req.body); 
+                        //res.json(req.body); 
+                        registerControler.registerProccess(req,res,next);
                     }
               })
               .catch(err => console.log(err));

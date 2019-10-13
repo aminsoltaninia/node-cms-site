@@ -52,14 +52,17 @@ module.exports = class Application {
 
     setConfig(){// baraye filehaye public. static file (css js image , ..)
         // rout file public ro be express moarefi mikonim
-       app.use(express.static('public'));//in baraye emale midleware hast/inja static path ro behesh moarefi mikonim
+       
+      require('app/passport/passport-local.js'); 
+       
+      app.use(express.static('public'));//in baraye emale midleware hast/inja static path ro behesh moarefi mikonim
        
        // hala express engine ro set mikonim
-       app.set('view engine','ejs');// packaje ejs ro nasb mikonim
+      app.set('view engine','ejs');// packaje ejs ro nasb mikonim
        
 
        //bad az set view wngn rout maroor be view ro miarefi mikonim
-       app.set('views',path.resolve('./resource/views'))
+      app.set('views',path.resolve('./resource/views'))
     
        // farakhaniye body parser
        app.use(bodyParser.json());// be sorate JSON mide etelaat ro injoori
@@ -87,9 +90,9 @@ module.exports = class Application {
        // flash message
        app.use(flash());
     
-       
-
-
+       app.use(passport.initialize());// for use passport
+       app.use(passport.session());
+        
 
 
 
