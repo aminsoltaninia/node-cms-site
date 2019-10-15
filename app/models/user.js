@@ -26,4 +26,10 @@ userSchema.pre('save',function(next){
       });
 })
 
+// baraye chek kardane password dakhele login ke aya user password ro drost mzane ya na 
+
+userSchema.methods.comparePassword = function(password){
+    return bcrypt.compareSync(password , this.password);// password ra ke behesh dadim  ba data base chek mikone
+    
+}
 module.exports = mongoose.model('User' , userSchema);

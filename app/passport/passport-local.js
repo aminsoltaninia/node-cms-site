@@ -23,7 +23,7 @@ passport.use('local.register',new localStrategy({
     passwordField : 'password',
     passReqToCallback: true   // req ro be callbackemon pas midim 
 },(req,email,password,done)=>{// miyad chek mikone ke aya karbar jozve karbarane ma hast ya na
-    console.log(email,password);
+    //console.log(email,password);
     User.findOne({'email':email},(err,user)=>{
         if(err) return done(err);
         if(user) return done(null,false,req.flash('errors','User already registered '))// parametr aval mige eror nist . par 2 mige age user vojod dasht dige dobare regsiter nashe
@@ -42,5 +42,25 @@ passport.use('local.register',new localStrategy({
             // vaghti hich errori nist 
             done(null,newUser);
         })
+    })
+}))
+
+
+// for passport login 
+
+
+passport.use('local.login',new localStrategy({
+    usernameField : 'email',
+    passwordField : 'password',
+    passReqToCallback: true   // req ro be callbackemon pas midim 
+},(req,email,password,done)=>{// miyad chek mikone ke aya karbar jozve karbarane ma hast ya na
+    //console.log(email,password);
+    User.findOne({'email':email},(err,user)=>{
+        if(err) return done(err);
+        
+        if(! user || !user.comparePassword(password)){
+            return done(null,false,req.flash('errors','information incorect'))
+        }
+        done(null,user);
     })
 }))

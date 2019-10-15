@@ -104,8 +104,43 @@ router.post('/register' ,[
        
             
         // }) 
- }
- 
+ });
+
+router.post('/login',[
+   
+      // // username must be an email
+      
+      check('email','فیلد ایمیل  باشد').isEmail(),
+      // password must be at least 5 chars long
+      check('password','پسورد کمتر از 8 کرکتر نباشد').isLength({ min: 8 })
+      
+      ],(req, res,next) => {
+            loginControler.recaptchaValidation(req,res)
+                .then(result =>{
+                       // Finds the validation errors in this request and wraps them in an object with handy functions
+                       const errors = validationResult(req).array();
+                       var message = [];
+                       //console.log(errors);
+                       for(var i=0;i<(errors.length);i++){
+                             message.push(errors[i].msg);
+                       }
+                       // console.log(message);
+                        //console.log(errors.isEmpty());
+                       if (!errors.length == 0) {
+                                //res.status(422).json({ errors: errors.array() });
+                               //res.json('show register error');
+                                req.flash('errors',message);
+                                res.redirect('/login');
+                      }
+                      else {
+                          //res.json(req.body); 
+                          loginControler.login(req,res,next);
+                      }
+                })
+                .catch(err => console.log(err));
+                
+      }
+                
 );
 
 
@@ -114,7 +149,5 @@ router.post('/register' ,[
 
 
 
-
-
-
+            
 module.exports = router;

@@ -14,9 +14,9 @@ class registerControler extends controller{// hala in erthbari mikone az control
 
     showRegistrationForm(req,res){
         
-        const errors = req.flash('errors');
-        console.log(errors);
-        res.render('auth/register.ejs',{ messages : errors , recaptcha : this.recaptcha.render()});//esme fili ke mikhim neshon bedimo mizarim
+        const Errors = req.flash('errors');
+        console.log(Errors);
+        res.render('auth/register.ejs',{ errors : Errors , recaptcha : this.recaptcha.render()});//esme fili ke mikhim neshon bedimo mizarim
     }
     recaptchaValidation(req,res){
        return new Promise((resolve,reject)=>{

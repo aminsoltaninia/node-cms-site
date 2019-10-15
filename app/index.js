@@ -77,10 +77,14 @@ module.exports = class Application {
 
 
        // estefade az session 
-       app.use(session({
+       app.use(session({// marboot be cooki hast
           secret:'mysecretkey',
           resave:true,
           saveUninitialized:true,
+
+          cookie:{expires :new Date(Date.now()+ 1000*60*60*24*5)},
+          // expire cooki ro tnsim mikonim// alan baraye 5roz gozashtim //  hata age server down beshe  va dobre biyad bala bazam login mimone ta session expire she
+
           store: new MongoStore({ mongooseConnection : mongoose.connection}) //mahale zakhire saziye session
        })) ;
 
