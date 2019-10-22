@@ -31,10 +31,21 @@ class loginControler extends controller{// hala in erthbari mikone az controller
        
      }
     login(req,res,next){
-        passport.authenticate('local.login',{// strategy ke khodemon mikhim roosh bearim 
-            successRedirect : '/',// age okmbood boro safeye asli
-            failureRedirect : '/login',
-            failureFlash : true // age bekhaim etelaat ro be sorate flash message ersal knim
+        passport.authenticate('local.login',(err, user)=>{
+            // user isnt exist
+
+            if (!user) return res.redirect('/login');
+            
+            // user is exist
+
+            req.logIn(user,err =>{
+                  if(req.body.remember){
+                      // set token
+                      console.log('set token');
+                      user.setRememberToken(res);
+                  }
+                  return res.redirect('/');
+            })
         })(req,res,next);// ba ezafe kardane in optionha kare mofidtari angam mide ta halate defult 
         
 

@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const bcrypt = require('bcrypt');
-
+const UniqueString = require('unique-string');
 
 const userSchema = mongoose.Schema({
       name : {type : String , require : true},
@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
       email : { type:String ,unique : true ,require : true},// email har kabar faghat yeki mistone bashe
       password : { type: String ,require : true },
       // rememberToken : {}// baraye cooki 
+
+      // baraye faal kardane yadavariye vorod
+      rememberToken :{type : String , default:null}
+
 },{timestamps : true});
 
 // baraye hash kardane passwor 
@@ -32,4 +36,15 @@ userSchema.methods.comparePassword = function(password){
     return bcrypt.compareSync(password , this.password);// password ra ke behesh dadim  ba data base chek mikone
     
 }
+
+userSchema.methods.setRememberToken = function(res){
+    const token = UniqueString();
+    res.cookie('remember_token',token,{maxAge :1000*60*60*24*30*9, httpOnly : true,signed:true});// use package cookie parser// baraye ramznegariye cooki az signed estefade mikonim
+//  update mongodb
+    this.update({rememberToken:token},err =>{
+       if(err) console.log(err);
+    });
+    
+}
+
 module.exports = mongoose.model('User' , userSchema);

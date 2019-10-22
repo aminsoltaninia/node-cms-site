@@ -14,8 +14,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);//session ro to mongodb zakhire mikonim 
 const mongoose = require('mongoose');
 const passport = require('passport');
-
-
+const Helpers = require('./helpers');
+const rememberLogin = require('app/http/middleware/rememberLogin');
 
 
 
@@ -97,6 +97,15 @@ module.exports = class Application {
        app.use(passport.initialize());// for use passport
        app.use(passport.session());
         
+       app.use(rememberLogin.handle);
+
+
+       // baraye inke vaghti ye user login mikone bere to page asli vali dige login va ozviyat ro nayare
+
+       app.use((req,res,next)=>{
+          app.locals = new Helpers(req,res).getObjects();
+          next();
+       })
 
 
 
