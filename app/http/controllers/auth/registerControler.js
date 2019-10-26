@@ -1,37 +1,33 @@
 const controller = require('app/http/controllers/controler');
-const Recaptcha = require('express-recaptcha').RecaptchaV2;
+
 const passport = require('passport');
+
 
 
 
 
 class registerControler extends controller{// hala in erthbari mikone az controller asli
     
-    constructor(){
-        super();
-        this.recaptcha = new Recaptcha('6LdlNb0UAAAAAIDD7l650KPJiC07HhW095We4W1G', '6LdlNb0UAAAAAPSwu98HNdgZhvXBIH1FCr7Ve2tj',{callback:'cb',hl:'fa'});
-    }
+    
 
     showRegistrationForm(req,res){
-        
+        const title = 'صفحه عضویت';
         const Errors = req.flash('errors');
         console.log(Errors);
-        res.render('auth/register.ejs',{ errors : Errors , recaptcha : this.recaptcha.render()});//esme fili ke mikhim neshon bedimo mizarim
+        res.render('home/auth/register.ejs',{ errors : Errors , recaptcha : this.recaptcha.render(),title});//esme fili ke mikhim neshon bedimo mizarim
     }
-    recaptchaValidation(req,res){
-       return new Promise((resolve,reject)=>{
-           
-        this.recaptcha.verify(req,(err,data)=>{
-            if (err){
-                req.flash('errors',' security option is OFF !!!  please accept reCAPTCHA and try again ');
-                res.redirect(req.url);// ba in dastor az harjaii omade mire hamon safe masalan az login age omae mmire login
-             } else resolve(true); 
-             
-         })
-       }) 
-       
+  
+     registerProcess(req,res,next){
+         this.recaptchaValidation(req,res)
+             .then(result=> this.validationData(req)) 
+             .then(result=>{
+                 if(result) this.register(req,res,next)
+                 else res.redirect('/register');
+             })
+             .catch(err => console.log(err));
      }
-     registerProccess(req,res,next){
+  
+     register(req,res,next){
              passport.authenticate('local.register',{// strategy ke khodemon mikhim roosh bearim 
                  successRedirect : '/',// age okmbood boro safeye asli
                  failureRedirect : '/register',

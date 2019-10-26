@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const _ = require('lodash');
 const http = require('http');// 0.shoro mikonim be inke be server vaslkonim site ro . ye raveshe dige
-const path = require('path');// path native nodejs hast
+
 
 // baraye inke be etellaate dakele body marboot req va res dastresi peyda konim body parser mikhaim 
 const bodyParser = require('body-parser');
@@ -10,11 +10,13 @@ const coockeiParser = require('cookie-parser');
 
 const { check, validationResult } = require('express-validator');
 const flash = require('connect-flash');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);//session ro to mongodb zakhire mikonim 
+const session = require('express-session'); 
 const mongoose = require('mongoose');
 const passport = require('passport');
 const Helpers = require('./helpers');
+
+
+
 const rememberLogin = require('app/http/middleware/rememberLogin');
 
 
@@ -35,14 +37,14 @@ module.exports = class Application {
 
     setupExpress(){
        const server = http.createServer(app);// 3. app ro be server moarefi mikonim
-       server.listen(3000,()=>{// 4 . cerate port
-           console.log('Listenin on port 3000');
+       server.listen(config.port,()=>{// 4 . cerate port
+           console.log(`Listenin on port ${config.port}`);
        });
     }
      
     setMongoConnection(){
        mongoose.Promise = global.Promise ;// estefade az Promis global va copy kardanesh to Promis mongoos
-       mongoose.connect('mongodb://localhost/nodejscms');// url marboor be mongodb ro moarefi mikonim  
+       mongoose.connect(config.database.url);// url marboor be mongodb ro moarefi mikonim  
        // bejaye localhost mishe port gharar begire
 
     } 
@@ -55,14 +57,18 @@ module.exports = class Application {
        
       require('app/passport/passport-local.js'); 
        
-      app.use(express.static('public'));//in baraye emale midleware hast/inja static path ro behesh moarefi mikonim
+      app.use(express.static(config.layout.public_dir));//in baraye emale midleware hast/inja static path ro behesh moarefi mikonim
        
        // hala express engine ro set mikonim
-      app.set('view engine','ejs');// packaje ejs ro nasb mikonim
-       
-
+      app.set('view engine',config.layout.view_engine);// packaje ejs ro nasb mikonim
+      
+      // express ejs 
+      app.use(config.layout.ejs.expressLayouts);
+      app.set("layout extractScripts",config.layout.ejs.extractScripts) ;//baraye azafe kardane tage script
+      app.set("layout extractStyles",config.layout.ejs.extractStyles);//baraye ezafe kardane style
+      app.set("layout",config.layout.ejs.master );
        //bad az set view wngn rout maroor be view ro miarefi mikonim
-      app.set('views',path.resolve('./resource/views'))
+      app.set('views',config.layout.view_dir)
     
        // farakhaniye body parser
        app.use(bodyParser.json());// be sorate JSON mide etelaat ro injoori
@@ -77,19 +83,10 @@ module.exports = class Application {
 
 
        // estefade az session 
-       app.use(session({// marboot be cooki hast
-          secret:'mysecretkey',
-          resave:true,
-          saveUninitialized:true,
-
-          cookie:{expires :new Date(Date.now()+ 1000*60*60*24*5)},
-          // expire cooki ro tnsim mikonim// alan baraye 5roz gozashtim //  hata age server down beshe  va dobre biyad bala bazam login mimone ta session expire she
-
-          store: new MongoStore({ mongooseConnection : mongoose.connection}) //mahale zakhire saziye session
-       })) ;
+       app.use(session({...config.session})) ;
 
        // farakhoniye koockei parser
-       app.use(coockeiParser('mysecretkey')) ;
+       app.use(coockeiParser(config.cookie_secretkey)) ;
 
        // flash message
        app.use(flash());
