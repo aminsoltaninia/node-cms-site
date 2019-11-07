@@ -1,66 +1,56 @@
 const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;// az class dahelesh estefe mikonim baraye inke system ba asas email va pass faal she
+const localStrategy = require('passport-local').Strategy;
 const User = require('app/models/user');
 
 
-
-
-// baraye inke karbar login bemone va nakhad harbar login kone 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
-  });
+});
    
 passport.deserializeUser(function(id, done) {
     User.findById(id, function (err, user) {
-      done(err, user);
+        done(err, user);
     });
 });
 
-// yestrategy ham khodemon mizarim roosh
-// az passport local ino peyda mikonim
-passport.use('local.register',new localStrategy({
+
+passport.use('local.register' , new localStrategy({
     usernameField : 'email',
     passwordField : 'password',
-    passReqToCallback: true   // req ro be callbackemon pas midim 
-},(req,email,password,done)=>{// miyad chek mikone ke aya karbar jozve karbarane ma hast ya na
-    //console.log(email,password);
-    User.findOne({'email':email},(err,user)=>{
+    passReqToCallback : true
+} , (req , email ,  password , done) => {
+    User.findOne({ 'email' : email } , (err , user) => {
         if(err) return done(err);
-        if(user) return done(null,false,req.flash('errors','User already registered '))// parametr aval mige eror nist . par 2 mige age user vojod dasht dige dobare regsiter nashe
-        //
+        if(user) return done(null , false , req.flash('errors' , 'چنین کاربری قبلا در سایت ثبت نام کرده است'));
 
-
-        // age user register nakarde bood ghablan 
-        const newUser = new User ({
-             name : req.body.name ,
-             email ,
-             password// ecs5 estefade mikonim va niaz be meghdar dehiye email va pass nist 
+        
+        const newUser = new User({
+            name : req.body.name,
+            email,
+            password
         });
-        // save to mongoDB
-        newUser.save(err =>{
-            if(err) return done(err,false,req.flash('errors',' registration dont complete , please try agin '));
-            // vaghti hich errori nist 
-            done(null,newUser);
+
+        newUser.save(err => {
+            if(err) return done(err , false , req.flash('errors' , 'ثبت نام با موفقیت انجام نشد لطفا دوباره سعی کنید'));
+            done(null , newUser);
         })
+
     })
 }))
 
 
-// for passport login 
-
-
-passport.use('local.login',new localStrategy({
+passport.use('local.login' , new localStrategy({
     usernameField : 'email',
     passwordField : 'password',
-    passReqToCallback: true   // req ro be callbackemon pas midim 
-},(req,email,password,done)=>{// miyad chek mikone ke aya karbar jozve karbarane ma hast ya na
-    //console.log(email,password);
-    User.findOne({'email':email},(err,user)=>{
+    passReqToCallback : true
+} , (req , email ,  password , done) => {
+    User.findOne({ 'email' : email } , (err , user) => {
         if(err) return done(err);
-        
-        if(! user || !user.comparePassword(password)){
-            return done(null,false,req.flash('errors','information incorect'))
+
+        if(! user || ! user.comparePassword(password)) {
+            return done(null , false , req.flash('errors' , 'اطلاعات وارد شده مطابقت ندارد'));
         }
-        done(null,user);
+
+        done(null , user);
     })
 }))

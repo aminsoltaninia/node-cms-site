@@ -1,22 +1,19 @@
-const Validtor = require('./validator');
-const {check} = require('express-validator');
+const validator = require('./validator');
+const { check } = require('express-validator');
 
-class loginValidator extends Validtor {
+class registerValidator extends validator {
     
-    handle(){
-         return [
-           
+    handle() {
+        return [
             check('email')
-              
                 .isEmail()
-                .withMessage('فیلد ایمیل  باشد')  ,
+                .withMessage('فیلد ایمیل معتبر نیست'),
 
             check('password')
-             
-                .isLength({min:8})
-                .withMessage('پسورد کمتر از 8 کرکتر نباشد')     
-         ]
+                .isLength({ min : 8 })
+                .withMessage('فیلد پسورد نمیتواند کمتر از 8 کاراکتر باشد')
+        ]
     }
 }
 
-module.exports = new loginValidator();
+module.exports = new registerValidator();

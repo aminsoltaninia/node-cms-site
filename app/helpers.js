@@ -1,34 +1,47 @@
-module.exports = class Helpers{
 
-    // az app.local bahre mabarim baaye inke ye seri informATION RO GLOBAL KONIM
-   constructor(req,res){
-       this.req = req;
-       this.res = res;
-   }   
+const path = require('path');
+const autoBind = require('auto-bind');
 
-   getObjects(){
-
-       return {
-           auth : this.auth()
-       }    
-
-
-   }
-   auth(){
-       return {
-        user : this.req.user,
-        check : this.req.isAuthenticated()
-       }
-   }
-
-    // app.locals ={
-    //     auth:{
-    //        user : req.user,
-    //        check : req.isAuthenticated()// baraye chek kardane inek user login karde ya kheir
-    //     } 
-    //  };
+module.exports = class Helpers {
+    
+    constructor(req , res) {
+        autoBind(this);
+        this.req = req;
+        this.res = res;
+        this.formData=  req.flash('formData')[0];// chon arraye hast niaz be onsore 0 darim ke object etelaate
+    }
 
 
- 
+    getObjects() {
+        return {
+            auth : this.auth(),
+            viewPath : this.viewPath,
+            ...this.getGlobalVaribales(),
+            old : this.old
+        }
+    }
 
+    auth() {
+        return {
+            check : this.req.isAuthenticated(),
+            user : this.req.user
+        }
+    }
+
+
+    viewPath(dir){
+        return path.resolve(config.layout.view_dir+'/'+dir);
+    }
+    
+    getGlobalVaribales(){
+        return{
+            errors : this.req.flash('errors')
+        }
+    }
+
+    old(field , defaultValue = '' ){
+
+        
+        return this.formData && this.formData.hasOwnProperty(field) ? this.formData[field] : defaultValue//shart vojode formData
+    }
 }

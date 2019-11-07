@@ -1,13 +1,6 @@
-// path packaje
-require('app-module-path').addPath(__dirname);
-
-
-
-const App = require('./app/index');
-// congfig ro global tarif mikonim
-
-//USE DOTENV
+require('app-module-path').addPath(__dirname)
+const App = require('./app');
 require('dotenv').config();
-global.config =  require('./config/index');
+global.config = require('./config');
 
 new App();
