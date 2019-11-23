@@ -1,6 +1,8 @@
 const validator = require('./validator');
 const { check } = require('express-validator');
 const Course = require('app/models/course');
+const path = require('path');
+
 class registerValidator extends validator {
     
     handle() {
@@ -8,11 +10,27 @@ class registerValidator extends validator {
             check('title')
                 .isLength({ min : 5 })
                 .withMessage('فیلد تایتل نمیتواند کمتر از 5 کاراکتر باشد')
-                .custom(async (value)=>{
+                .custom(async (value,{req})=>{
+                    if(req.query._method === 'put'){//az re method ro dar miyarim ke dakhele url hast
+                        let course = await Course.findById(req.params.id);
+                        if(course.title === value) return;
+                    }
                     let course = await Course.findOne({slug: this.slug(value)})   
                     if(course)
                       throw new Error('این عنوان دوره قبلا ایجاد شده است');
-                }) ,   
+             }) , 
+                
+            check('images')
+                .custom(async (value,{req})=>{
+                    if(req.query._method === 'put' && value === undefined) return;
+                    if(! value)
+                      throw new Error(' وارد کردن تصویر الزامی است ') ;
+               
+                let fileExt = ['.png' , 'jpg' , 'jpeg' , '.svg'];
+                if(!fileExt.includes(path.extname(value)))// ba path mgirim value file vorodi ro va chek mikonim 
+                  throw new Error('پسوند فایل  عکس وارد شده مجاز نیست');
+               
+             }) ,   
             check('type')
                 .not().isEmpty()
                 .withMessage('فیلد عنوان نمیتواند خالی باشد'),

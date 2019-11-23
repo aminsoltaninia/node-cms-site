@@ -1,7 +1,8 @@
 const autoBind = require('auto-bind');
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 const { validationResult } = require('express-validator');
-
+const isMongoId = require('validator/lib/isMongoId');
+const  sprintf = require('sprintf-js').sprintf;
 module.exports = class controller {
     constructor() {
         autoBind(this);
@@ -32,10 +33,11 @@ module.exports = class controller {
         const result = validationResult(req);
         if (! result.isEmpty()) {
             const errors = result.array();
+            console.log(errors);
             const messages = [];
            
             errors.forEach(err => messages.push(err.msg));
-
+            console.log(messages);
             req.flash('errors' , messages)
 
             return false;
@@ -48,5 +50,50 @@ module.exports = class controller {
         req.flash('formData', req.body);
 
         return res.redirect(req.header('Referer')|| '/');
+    }
+
+    isMongoId(paramId){
+        if(!isMongoId(paramId)){
+
+           this.error('ای دی وارد شده صحیح نیست',404)
+            
+        }
+    }
+
+    error(message,status = 500){
+        let error = new Error(message)
+            error.status = status;
+            throw error;
+    }
+
+
+
+     getTime(episodes){
+       let second = 0 ;
+
+       episodes.forEach(episode =>{
+           let time = episode.time.split(":");
+           if(time.length === 2){ // format time => 25:50
+              second+= parseInt(time[0])*60;
+              second+= parseInt(time[1]);
+           }else if(time.length === 3 ){// format time => 01 : 25 : 50
+               second+= parseInt(time[0])*60*60;
+               second+= parseInt(time[1])*60;
+               second+= parseInt(time[2]);
+           }
+       })
+       // generate minutes from second
+
+       let minutes = Math.floor(second/60);// be oaiin round mikone
+       
+       let hours = Math.floor(minutes/60);
+       
+       minutes -= hours * 60 ;
+
+       second = Math.floor(((second/60)%1) * 60 );
+
+       // 1:4:45 => 01:02:45
+       //console.log(sprintf('%02d:%02d:%02d',hours,minutes,second));
+       return sprintf('%02d:%02d:%02d',hours,minutes,second);
     }
 }
