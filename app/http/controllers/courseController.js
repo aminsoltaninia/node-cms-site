@@ -11,11 +11,21 @@ class courseController extends controller {
         //return res.json(req.query)//for search box
         let query = {};
         
-        if (req.query.search)
+        if (req.query.search)// for search box
            query.title = new RegExp(req.query.search , 'gi')// global search and case insensetive search
-        console.log(query) 
-        let courses =await Course.find({...query})
+        //console.log(query)
+        if(req.query.type && req.query.type != 'all') // vip cash free course 
+           query.type = req.query.type 
+
+        let courses =Course.find({...query})
        // return res.json(courses);
+
+
+
+       // for order course
+        if(req.query.order)
+          courses.sort({ createdAt : -1})
+        courses =await  courses.exec();
 
         res.render('home/courses' , { courses });
     }

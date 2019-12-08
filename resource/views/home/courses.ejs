@@ -5,34 +5,34 @@
 
 <%
 
-let { search } = req.query ;
+let { search , type , order } = req.query ;
 
 %>
 
 
 <form action="/courses" method="GET">
 
-
+<% if(search) { %> 
     <div class="form-group col-md-3">
-      <input type="hidden" name="search" value="">
-      <span>عبارت جستجو شده : <a href="/courses" class="btn btn-sm btn-dark">حذف</a></span> 
+      <input type="hidden" name="search" value="<%= search %>">
+      <span>عبارت جستجو شده : <%= search %> <a href="/courses?<%= type ? 'type=' + type : '' %><%= order ? '&order=1' : '' %>" class="btn btn-sm btn-dark">حذف</a></span> 
     </div>  
- 
+<% } %> 
  
 
   <div class="form-group col-md-3">
       <select name="type" class="form-control">
-          <option value="all"  >همه دوره ها</option>
-          <option value="vip">اعضای ویژه</option>
-          <option value="cash"  >نقدی</option>
-          <option value="free"  >رایگان</option>
+          <option value="all" <%= type === 'all' ? 'selected' : '' %>>همه دوره ها</option>
+          <option value="vip"  <%= type === 'vip' ? 'selected' : '' %>>اعضای ویژه</option>
+          <option value="cash"  <%= type === 'cash' ? 'selected' : '' %>>نقدی</option>
+          <option value="free"   <%= type === 'free' ? 'selected' : '' %>>رایگان</option>
       </select>
   </div>
 
 
   <div class="form-group col-md-3">
       <label class="checkbox-inline">
-          <input type="checkbox" name="order" value="1" class="ml-2" >از اول به آخر
+          <input type="checkbox" name="order" value="1" class="ml-2"  <%= order === '1' ? 'checked' : '' %>>از اول به آخر
       </label>
   </div>
 
