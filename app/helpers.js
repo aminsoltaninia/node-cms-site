@@ -1,6 +1,8 @@
 
 const path = require('path');
 const autoBind = require('auto-bind');
+const moment = require('moment-jalaali');
+moment.loadPersian({usePersianDigits: true});// for chand date to persian font
 
 module.exports = class Helpers {
     
@@ -17,8 +19,10 @@ module.exports = class Helpers {
             auth : this.auth(),
             viewPath : this.viewPath,
             ...this.getGlobalVaribales(),
-            old : this.old
-        }
+            old : this.old,
+            date : this.date,
+            req : this.req // getobject ye seri chizaro baramon dar daster ghara mide 
+        } // search ro az query estekhrj mikonim va midim be course
     }
 
     auth() {
@@ -43,5 +47,10 @@ module.exports = class Helpers {
 
         
         return this.formData && this.formData.hasOwnProperty(field) ? this.formData[field] : defaultValue//shart vojode formData
+    }
+
+
+    date(time){
+        return moment(time);
     }
 }

@@ -51,4 +51,12 @@ userSchema.virtual('courses',{
      foreignField : 'user'
 })
 
+userSchema.methods.isVip = function(){
+    return true ; 
+}
+
+userSchema.methods.checkBuying =async function(course){
+    return true ;
+}
+
 module.exports = mongoose.model('User' , userSchema);

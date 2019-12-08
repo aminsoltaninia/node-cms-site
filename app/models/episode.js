@@ -1,36 +1,66 @@
 const mongoose = require('mongoose');
-const schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate');
+const bcrypt = require('bcrypt');
 
-const episodeSchema = schema({
-     course :{ type : schema.Types.ObjectId , ref : 'Course' },// id kasi ke course ro be vojod miyare zakhore mikonim
-     title : { type : String , required : true },
-     type : { type : String , required : true },
-     body : { type : String , required : true },
-     videoUrl : { type : String , required : true },
-     number : { type : Number , required : true },
-     time : { type : String , default : '00:00:00' },
-     downloadCount : { type : Number , default : 0 },
-     viewCount : { type : Number , default : 0 },// tedade bazdid haye in safe
-     commentCount : { type : Number , default : 0 },// tedade nazarhaye marboot be in doore
-    } , { timestamps : true , toJSON : {virtuals : true } });
+const episodeSchema = Schema({
+    course : { type : Schema.Types.ObjectId , ref : 'Course'},
+    title : { type : String , required : true },
+    type : { type : String , required : true },
+    body : { type : String , required : true },
+    time : { type : String , default : '00:00:00' },
+    number : { type : Number , required : true },
+    videoUrl : { type : String , required : true },
+    downloadCount : { type : Number , default : 0 },
+    viewCount : { type : Number , default : 0 },
+    commentCount : { type : Number , default : 0 },
+} , { timestamps : true });
 
+episodeSchema.plugin(mongoosePaginate);
 
-    episodeSchema.plugin(mongoosePaginate);// ba plugin ghabeliyate mongoosepaginate ro ezafe mikonim
-
-
-    episodeSchema.methods.typeToPersian = function(){
+episodeSchema.methods.typeToPersian = function() {
     switch (this.type) {
         case 'cash':
                 return 'نقدی'
             break;
         case 'vip':
-                return 'عضویت ویژه'
-            break; 
+            return 'اعضای ویژه'
+        break;    
         default:
-                return ' رایگان'
+            return 'رایگان'    
             break;
     }
 }
 
-module.exports = mongoose.model('Episode' ,episodeSchema);
+episodeSchema.methods.download = function(check, canUserUse) {
+    if(! check) return '#';
+
+    let status = false;
+    if(this.type == 'free') {
+        status = true;
+    } else if(this.type == 'vip' || this.type == 'cash') {
+        status = canUserUse
+    }
+
+    let timestamps = new Date().getTime() + 3600 * 1000 * 12;
+
+    let text = `aQTR@!#Fa#%!@%SDQGGASDF${this.id}${timestamps}`
+
+    let salt = bcrypt.genSaltSync(15);
+    let hash = bcrypt.hashSync(text , salt); 
+    
+
+    return status ? `/download/${this.id}?mac=${hash}&t=${timestamps}` : '#';
+}
+
+episodeSchema.methods.path = function(){
+    return `${this.course.path()}/${this.number}`
+}
+
+
+episodeSchema.methods.inc = async function(field , num = 1 ){
+    this[field] += num ;
+    await this.save();
+}
+
+module.exports = mongoose.model('Episode' , episodeSchema);
