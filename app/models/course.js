@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate');
 
 const courseSchema = Schema({
+    categories : [{ type : Schema.Types.ObjectId , ref : 'Category'}],
     user : { type : Schema.Types.ObjectId , ref : 'User'},
     title : { type : String , required : true },
     slug : { type : String , required : true },

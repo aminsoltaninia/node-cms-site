@@ -6,9 +6,11 @@ const adminController = require('app/http/controllers/admin/adminController');
 const courseController = require('app/http/controllers/admin/courseController');
 const episodeController = require('app/http/controllers/admin/episodeController');
 const commentController = require('app/http/controllers/admin/commentController');
+const categoryController = require('app/http/controllers/admin/categoryController')
 // validator
 const courseValidator = require('app/http/validators/courseValidator');
-const episodeValidator = require('app/http/validators/episodeValidator')
+const episodeValidator = require('app/http/validators/episodeValidator');
+const categoryValidator = require('app/http/validators/categoryValidator')
 // Helpers 
 const upload = require('app/helpers/uploadImage');
 // midelwares
@@ -42,12 +44,9 @@ router.delete('/courses/:id',courseController.destroy);//delet course
 
 router.get('/episodes' , episodeController.index);
 router.get('/episodes/create',episodeController.create);
-router.post('/episodes/create',episodeValidator.handle(),episodeController.store);
-
-
+router.post('/episodes/create',episodeValidator.handle(),episodeController.store)
 router.get('/episodes/:id/edit',episodeController.edit);
 router.put('/episodes/:id',episodeValidator.handle(),episodeController.update)
-
 router.delete('/episodes/:id',episodeController.destroy);//delet course
 
 // Comments Routes
@@ -56,5 +55,14 @@ router.put('/comments/:id/approved',commentController.update)
 router.get('/comments',commentController.index)
 router.delete('/comments/:id' ,commentController.destroy)
 router.get('/comments/approved' , commentController.approved)
+
+// Categories Routes
+
+router.get('/categories' , categoryController.index);
+router.get('/categories/create',categoryController.create);
+router.post('/categories/create',categoryValidator.handle(),categoryController.store)
+router.get('/categories/:id/edit',categoryController.edit);
+router.put('/categories/:id',categoryValidator.handle(),categoryController.update)
+router.delete('/categories/:id',categoryController.destroy);//delet course
 
 module.exports = router;

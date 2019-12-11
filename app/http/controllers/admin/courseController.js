@@ -1,5 +1,6 @@
 const controller = require('app/http/controllers/controller');
 const Course = require('app/models/course');
+const Category = require('app/models/category')
 const fs = require('fs');
 const sharp = require('sharp');
 const path=require('path');
@@ -18,6 +19,7 @@ class courseController extends controller {
     }
 
     create(req,res){
+
         res.render('admin/courses/create',{title: 'ایجاد دوره'});
     }
 
