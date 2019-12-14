@@ -65,4 +65,8 @@ router.get('/categories/:id/edit',categoryController.edit);
 router.put('/categories/:id',categoryValidator.handle(),categoryController.update)
 router.delete('/categories/:id',categoryController.destroy);//delet course
 
+
+// CKEditor 4 
+
+router.post('/upload-image' , upload.single('upload') , adminController.uploadImage);
 module.exports = router;

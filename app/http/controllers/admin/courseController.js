@@ -18,9 +18,10 @@ class courseController extends controller {
         }
     }
 
-    create(req,res){
+    async create(req , res) {
+        let categories = await Category.find({});
 
-        res.render('admin/courses/create',{title: 'ایجاد دوره'});
+        res.render('admin/courses/create' , { categories });        
     }
 
     async store(req,res,next){
@@ -62,22 +63,20 @@ class courseController extends controller {
             next(error);
         }
     }
-    
-    async edit(req,res,next){
-        
+    async edit(req, res ,next) {
         try {
             this.isMongoId(req.params.id);
+
             let course = await Course.findById(req.params.id);
-            if(!course) this.error('  چنین دوره وحود ندارد  ',404);
-                
-            
-  
-  
-            return res.render('admin/courses/edit',{course});
-         } catch (error) {
-            next(error); 
-         }
+            if( ! course ) this.error('چنین دوره ای وجود ندارد' , 404);
+
+            let categories = await Category.find({});
+            return res.render('admin/courses/edit' , { course , categories });
+        } catch (err) {
+            next(err);
+        }
     }
+
 
     async update(req,res,next){
         
