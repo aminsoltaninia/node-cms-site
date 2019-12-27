@@ -8,6 +8,7 @@ class forgotPasswordController extends controller {
     
     showResetPassword(req , res) {
         const title = 'بازیابی رمز عبور';
+       // return res.json('hi')
         res.render('home/auth/passwords/reset' , 
                 {
                 recaptcha : this.recaptcha.render() ,

@@ -25,7 +25,7 @@ router.get('/register' , registerController.showRegsitrationForm);
 router.post('/register' , registerValidator.handle() , registerController.registerProccess);
 
 
-router.get('/password/reset' , forgotPasswordController.showForgotPassword);
+router.get('/password/email' , forgotPasswordController.showForgotPassword);
 router.post('/password/email' , forgotPasswordValidator.handle() , forgotPasswordController.sendPasswordResetLinl);
 
 router.get('/password/reset/:token',resetPasswordController.showResetPassword);

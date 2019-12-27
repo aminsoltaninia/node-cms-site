@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const uniqueString = require('unique-string')
+const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate');
 
-const userSchema = mongoose.Schema({
+const userSchema =Schema({
     name : { type : String , required : true },
     admin : { type : Boolean ,  default : 0 },
     email : { type : String , unique : true  ,required : true},
     password : { type : String ,  required : true },
-    rememberToken : { type : String , default : null }
+    rememberToken : { type : String , default : null },
+    learning : [{  type : Schema.Types.ObjectId , ref : 'Course'}],
+    roles : [{  type : Schema.Types.ObjectId , ref : 'Role'}]
 } , { timestamps : true , toJSON : {virtuals : true } });
 
 
@@ -19,6 +23,8 @@ userSchema.pre('save' , function(next) {
     this.password= hash;
     next();
 });
+
+userSchema.plugin(mongoosePaginate);
 
 userSchema.pre('findOneAndUpdate' , function(next) {
 
@@ -36,6 +42,15 @@ userSchema.pre('findOneAndUpdate' , function(next) {
 userSchema.methods.comparePassword = function(password) {
     return bcrypt.compareSync(password , this.password);
 }
+
+userSchema.methods.hasRole = function(roles) {
+    let result = roles.filter(role => {
+        return this.roles.indexOf(role) > -1 ;
+    })
+    console.log(result)
+    return !! result.length ; // if 0 ret false , if 1 ret true
+}
+
 
 userSchema.methods.setRememberToken = function(res) {
     const token = uniqueString();
@@ -55,8 +70,8 @@ userSchema.methods.isVip = function(){
     return true ; 
 }
 
-userSchema.methods.checkBuying =async function(course){
-    return true ;
+userSchema.methods.checkBuying = function(courseId){
+    return this.learning.indexOf(courseId) !== -1;// age vojod ndashte bashe -1 mide
 }
 
 module.exports = mongoose.model('User' , userSchema);

@@ -27,6 +27,7 @@ class forgotPasswordController extends controller {
 
     async sendResetLink(req ,res ) {
         let user = await User.findOne({email : req.body.email});
+        //return res.json(user)
         if(!user){// user nist
             req.flash('errors','چنین کاربری وجود ندارد');
             return this.back(req,res);
@@ -45,7 +46,7 @@ class forgotPasswordController extends controller {
         // send mail
 
         
-        //req.flash('success',' بازیابی رمز عبور با موفقیت  انجام شد');
+        req.flash('success',' بازیابی رمز عبور با موفقیت  انجام شد');
         res.redirect('/');
     }
 

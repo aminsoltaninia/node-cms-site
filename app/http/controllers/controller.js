@@ -96,4 +96,23 @@ module.exports = class controller {
        //console.log(sprintf('%02d:%02d:%02d',hours,minutes,second));
        return sprintf('%02d:%02d:%02d',hours,minutes,second);
     }
+
+    alert(req, data ) {
+
+       let title = data.title || '',
+           message = data.message || '',
+           typeIcon = data.type || 'info',
+           button = data.button || null ,
+           timer = data.timer || 2000 ;
+        
+       req.flash('sweetalert' , { title , message , typeIcon , button , timer})    
+
+    }
+
+    alerAndBack( req , res , data ){
+        this.alert(req,data);
+        this.back(req,res);
+    }
+
+
 }
