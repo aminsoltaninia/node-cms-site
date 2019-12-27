@@ -24,10 +24,10 @@ let gate = new ConnectRoles({
 //     return true;
 // });
 
-// gate.use('access edit-course page' , (req)=>{
-//    if(req.courseUserId == req.user.id ) return true ;
+gate.use('access edit-course page' , (req)=>{
+   if(req.courseUserId == req.user.id ) return true ;
 
-// });
+});
 
 
 // gate.use('access approved-comment page',(req)=>{
@@ -42,9 +42,9 @@ permissions()
     .then(permissions => {
         permissions.forEach(permission => {
             let roles = permission.roles.map(item => item._id);
-            console.log('roles : ' , roles)
+           // console.log('roles : ' , roles)
             gate.use(permission.name , (req) => {
-                console.log(permission.name)
+               // console.log(permission.name)
                 return (req.isAuthenticated())
                         ? req.user.hasRole(roles)
                         : false;

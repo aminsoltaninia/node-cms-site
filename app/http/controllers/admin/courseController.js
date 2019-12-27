@@ -10,7 +10,7 @@ class courseController extends controller {
             //let courses = await Course.find({}).sort({createdAt:1});// a akhar be aval . -1 az aval be akhar 
             let page = req.query.page || 1;// age pagi  nabood 1 ro bargardoe
             //console.log(page);
-            let courses = await Course.paginate({},{page,sort:{createdAt:1},limit : 2});
+            let courses = await Course.paginate({},{page,sort:{createdAt:1},limit : 20});
             res.render('admin/courses/index',{title : 'دوره ها',courses});
         } catch (error) {
             
@@ -40,7 +40,7 @@ class courseController extends controller {
 
            let images = this.imageResize(req.file); // az tage image ke name on ro images estefade kardim migirim dakhele create.ejs
 
-           let { title , body , type , price , tags } = req.body;
+           let { title , body , type , price , tags , lang } = req.body;
         
            let newCourse = new Course({
               user : req.user._id,
@@ -51,7 +51,8 @@ class courseController extends controller {
               price ,
               images ,
               thumb:images[480],
-              tags 
+              tags ,
+              lang
            })
             // console.log(newCourse);
            await newCourse.save();

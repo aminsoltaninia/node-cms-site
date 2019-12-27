@@ -5,7 +5,7 @@ const Comment = require('app/models/comment');
 class homeController extends controller {
     
     async index(req , res) {
-        let courses = await Course.find({}).sort({ createdAt : 1}).limit(8).exec();
+        let courses = await Course.find({ lang : req.getLocale()}).sort({ createdAt : 1}).limit(8).exec();
         res.render('home/index' , { courses });
     }
 

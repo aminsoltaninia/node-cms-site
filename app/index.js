@@ -12,6 +12,7 @@ const Helpers = require('./helpers');
 const methodOverride = require('method-override');
 const rememberLogin = require('app/http/middleware/rememberLogin');
 const gate = require('app/helpers/gate');
+const i18n = require("i18n");
 module.exports = class Application {
     constructor() {
         this.setupExpress();
@@ -57,7 +58,13 @@ module.exports = class Application {
         app.use(passport.session());
         app.use(rememberLogin.handle);
         app.use(gate.middleware())
-
+        i18n.configure({
+            locales:['en', 'fa'],
+            directory: config.layout.locales_directory,
+            defaultLocale : 'fa',
+            cookie : 'lang'
+        });
+        app.use(i18n.init )
         app.use((req , res , next) => {
             app.locals = new Helpers(req, res).getObjects();
             next();
