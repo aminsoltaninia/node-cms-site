@@ -38,4 +38,8 @@ router.get('/user/panel/vip' , userController.vip);
 router.post('/user/panel/vip/payment' , userController.vipPayment);
 router.get('/user/panel/vip/payment/check' , userController.vipChekPayment);
 
+
+/// sitemap router
+
+router.get('/sitemap.xml' , homeController.sitemap);
 module.exports = router;
