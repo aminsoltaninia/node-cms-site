@@ -9,6 +9,8 @@ const userSchema =Schema({
     admin : { type : Boolean ,  default : 0 },
     email : { type : String , unique : true  ,required : true},
     password : { type : String ,  required : true },
+    vipTime : { type : Date , default : new Date().toISOString() },
+    vipType : { type : String , default : 'month' },
     rememberToken : { type : String , default : null },
     learning : [{  type : Schema.Types.ObjectId , ref : 'Course'}],
     roles : [{  type : Schema.Types.ObjectId , ref : 'Role'}]
@@ -67,7 +69,7 @@ userSchema.virtual('courses',{
 })
 
 userSchema.methods.isVip = function(){
-    return true ; 
+    return new Date(this.vipTime) > new Date() ; 
 }
 
 userSchema.methods.checkBuying = function(courseId){
