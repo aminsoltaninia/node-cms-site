@@ -14,6 +14,7 @@ const commentValidator = require('app/http/validators/commentValidator')
 
 // middlewares
 const redirectINotfAuthenticated = require('app/http/middleware/redirectIfNotAuthenticated');
+const convertFileToField = require('app/http/middleware/convertFileToField')
 
 
 router.get('/logout' , (req ,res) => {
@@ -42,4 +43,29 @@ router.get('/user/panel/vip/payment/check' , userController.vipChekPayment);
 /// sitemap router
 
 router.get('/sitemap.xml' , homeController.sitemap);
+
+// feed router
+
+router.get('/feed/courses' , homeController.feedCourses);
+router.get('/feed/episodes' , homeController.feedEpisodes);
+
+
+// Ajax router
+  // Helpers 
+const upload = require('app/helpers/uploadImage');
+const gate = require('app/helpers/gate');
+
+
+router.get('/ajaxupload' , (req,res,next) => res.render('home/ajaxupload'));
+router.post('/ajaxupload' ,upload.single('photo'), convertFileToField.handle ,(req,res,next) => {
+    try {
+        
+        res.json({ ... req.body , ... req.file  })
+
+    } catch (error) {
+        next(error)
+    }
+}
+);
+
 module.exports = router;

@@ -1,0 +1,91 @@
+<form id="myform" action="/ajaxupload" class="w-50" method="POST">
+    <div class="form-group">
+        <lable for="name"> نام : </lable>
+        <input type="text" name="name" class="form-control" id="name">
+    </div>
+    <div class="form-group">
+        <lable for="name"> نام خانوادگی : </lable>
+        <input type="text" name="family" class="form-control" id="family">
+    </div>
+    <button type="submit" class="btn btn-danger">ارسال</button>
+</form>
+
+
+<form id="myform2" action="#" class="w-50" >
+    <div class="form-group">
+        <lable for="name"> input information with ajax </lable>
+    </div>
+    <div class="form-group">
+        <lable for="name"> نام : </lable>
+        <input type="text" name="name" class="form-control" id="name1">
+    </div>
+    <div class="form-group">
+        <lable for="family1"> نام خانوادگی : </lable>
+        <input type="text" name="family" class="form-control" id="family1">
+    </div>
+    <div class="form-group">
+        <lable for="file"> تصویر کاربر : </lable>
+        <input type="file" name="family" class="form-control" id="file">
+    </div>
+    <button type="submit" class="btn btn-danger">ارسال</button>
+</form>
+
+<script>
+
+    document.getElementById('myform2').addEventListener('submit' , function(event){
+        event.preventDefault();
+        let name = document.getElementById('name1'),//select name 
+            family = document.getElementById('family1'),
+            file = document.getElementById('file');
+
+       // console.log(name.value , family.value )   
+        if( name.value == '' && family.value == '' ) return ; 
+        // use fetch for opluad to determine url
+        console.log('hi');
+        console.log(file.files[0]);
+        // fetch('/ajaxupload' , {
+        //    method : 'POST',
+        //     body:{
+        //         name ,    
+        //         family               
+
+        //    } 
+           
+
+        // }).then(res => {
+        //     console.log('hi')
+        // }).catch(err => {
+        //     console.log(err);
+        // })
+        let formData = new FormData();
+        formData.append('name' , name.value );
+        formData.append('family',family.value);
+        formData.append('photo' , file.files[0]);
+       // console.log(formData.entries());
+        
+        // for (let data of formData.entries()){
+        //     console.log(data)
+        // }
+     
+        fetch('/ajaxupload', {
+                    method: 'POST', // or 'PUT'
+                    body : formData
+                    // headers: {
+                    // 'Content-Type': 'application/json',
+                    // 'Accept' : 'application/json'
+                    // },
+                    // body: JSON.stringify({ 
+                    //     name : name.value , 
+                    //     family: family.value
+                    // }),
+                    })
+                    .then((res) => {return res.json()})
+                    .then((res) => {
+                             console.log('Success:', res );
+                    })
+                    .catch((error) => {
+                    console.error('Error:', error);
+                    });
+    })
+
+</script>
